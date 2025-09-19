@@ -123,6 +123,12 @@
     <!-- ===================== Screen: Game Select ===================== -->
     <section id="screen-select" class="hidden-panel">
       <div class="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+        <!-- Apple Game Card -->
+        <article class="card p-6 flex flex-col">
+          <h3 class="text-xl font-semibold mb-1">Apple of Fortune</h3>
+          <p class="text-slate-400 mb-4">🍎 10×5 grid, rotten apples.</p>
+          <button data-open="apple" class="btn mt-auto w-28">Open</button>
+        </article>
         <!-- Aviator Card -->
         <article class="card p-6 flex flex-col">
           <h3 class="text-xl font-semibold mb-1">Aviator</h3>
@@ -267,6 +273,34 @@
       </div>
     </section>
 
+    <!-- ===================== Screen: Apple ===================== -->
+    <section id="screen-apple" class="hidden-panel">
+      <div class="card p-6 md:p-8">
+        <div class="flex items-center justify-between">
+          <h3 class="text-2xl font-semibold">Apple Game — Prediction</h3>
+          <button data-back class="btn-ghost px-4">Back</button>
+        </div>
+
+        <div class="mt-6 flex flex-wrap items-center gap-3">
+          <button id="appleBtn" class="btn">Take prediction</button>
+          <button id="appleRegen" class="btn-ghost">Retry</button>
+        </div>
+
+    <!-- Grid 10x5 centered -->
+        <div class="mt-6 center-flex">
+          <div id="appleGrid" class="grid grid-cols-5 gap-3"></div>
+        </div>
+
+    <!-- Console -->
+        <div class="card mt-8 p-4">
+          <h4 class="font-semibold mb-2">Console Log</h4>
+          <div class="rounded-xl border border-white/10 bg-black/30 p-3 h-48 overflow-auto">
+            <pre id="logBoxApple" class="mono text-sm whitespace-pre-wrap"></pre>
+          </div>
+        </div>
+      </div>
+    </section>
+
   </main>
 
   <script>
@@ -281,6 +315,7 @@
       aviator: $('#screen-aviator'),
       mines: $('#screen-mines'),
       penalty: $('#screen-penalty'),
+      apple: $('#screen-apple'), // ← вот этого не хватало
     };
     function show(name){
       Object.values(screens).forEach(sc => sc.classList.add('hidden-panel'));
@@ -490,8 +525,74 @@
     penaltyBtn.addEventListener('click', runPenalty);
     penaltyRegen.addEventListener('click', runPenalty);
 
-    // Start at ID screen
-    show('id');
+    // ------------------ Apple Game ------------------
+  const grid = document.getElementById("appleGrid");
+  const takeBtn = document.getElementById("appleBtn");
+  const retryBtn = document.getElementById("appleRegen");
+
+  let currentRow = 0; // отслеживаем какой ряд сейчас
+  const totalRows = 10; // всего 10 линий
+  const cols = 5;
+ 
+  // открыть экран Apple
+  $$('[data-open="apple"]').forEach(b=>{
+    b.addEventListener('click', ()=>{ show('apple'); });
+  });
+
+  // Функция создания пустой сетки
+  function initGrid() {
+    grid.innerHTML = "";
+    for (let r = 0; r < totalRows; r++) {
+      for (let c = 0; c < cols; c++) {
+        const cell = document.createElement("div");
+        cell.className = "cell cell-sm text-xl select-none border border-gray-400 flex items-center justify-center";
+        cell.dataset.row = r;
+        cell.dataset.col = c;
+        grid.appendChild(cell);
+      }
+    }
+    currentRow = 0;
+  }
+
+  // Функция генерации ряда с яблоками и черепами
+  function revealRow(row) {
+    const cells = Array.from(grid.querySelectorAll(`[data-row='${row}']`));
+    let rottenCount = 1;
+
+    if (row >= 4 && row <= 6) rottenCount = 2;
+    else if (row >= 7 && row <= 8) rottenCount = 3;
+    else if (row === 9) rottenCount = 4;
+
+    const rottenIndexes = [];
+    while (rottenIndexes.length < rottenCount) {
+      const idx = Math.floor(Math.random() * cols);
+      if (!rottenIndexes.includes(idx)) rottenIndexes.push(idx);
+    }
+
+    cells.forEach((cell, i) => {
+      if (rottenIndexes.includes(i)) {
+        cell.textContent = "💀";
+      } else {
+        cell.textContent = "🍏";
+      }
+    });
+  }
+
+  // Обработчик Take Prediction
+  takeBtn.addEventListener("click", () => {
+    if (currentRow < totalRows) {
+      revealRow(currentRow);
+      currentRow++;
+    }
+  });
+
+  // Обработчик Retry
+  retryBtn.addEventListener("click", () => {
+    initGrid();
+  });
+
+  // Инициализация
+  initGrid();
   </script>
 </body>
 </html>
