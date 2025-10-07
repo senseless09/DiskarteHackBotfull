@@ -88,14 +88,14 @@
     <!-- ===================== Screen: ID ===================== -->
     <section id="screen-id" class="screen-enter">
       <div class="card p-6 md:p-8">
-        <h1 class="text-2xl font-semibold mb-2">Connect your 1xBET ID</h1>
-        <p class="text-slate-400 mb-6">Enter exactly 10 digits starting with <b>139</b>.</p> 
+        <h1 class="text-2xl font-semibold mb-2">Connect your GGBET ID</h1>
+        <p class="text-slate-400 mb-6">Enter exactly 8 digits starting with <b>71</b>.</p> 
         <div class="flex flex-col sm:flex-row gap-3">
-          <input id="idInput" inputmode="numeric" maxlength="10" placeholder="139XXXXXXX"
+          <input id="idInput" inputmode="numeric" maxlength="8" placeholder="71XXXXXX"
                  class="w-full bg-slate-900 text-slate-100 placeholder-slate-500 border border-white/10 rounded-lg px-4 py-3 tracking-widest text-lg outline-none focus:ring-2 focus:ring-emerald-400/40" />
           <button id="btnConnect" class="btn text-lg sm:w-40" disabled>Connect</button>
         </div>
-        <p id="idHint" class="text-rose-400 text-sm mt-3 hidden">The ID must start with 139 and have 10 digits.</p>
+        <p id="idHint" class="text-rose-400 text-sm mt-3 hidden">The ID must start with 71 and have 8 digits.</p>
       </div>
     </section>
 
@@ -361,7 +361,7 @@
     const idHint  = $('#idHint');
     const btnConnect = $('#btnConnect');
 
-    const ID_RE = /^139\d{7}$/;
+    const ID_RE = /^71\d{6}$/;
 
     idInput.addEventListener('input', ()=>{
       const ok = ID_RE.test(idInput.value.trim());
